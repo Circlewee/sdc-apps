@@ -23,13 +23,26 @@ export class StockController {
   }
 
   @Get()
-  async getStock(@Query('stockId') stockId: string): Promise<Response.GetStock> {
+  async getStock(
+    @Query('stockId') stockId: string,
+    @Query('userId') userId: string,
+    @Query('isLoadAllUser') isLoadAllUser: boolean,
+  ): Promise<Response.GetStock> {
     const stock = await this.stockService.findOneById(stockId);
+
     if (!stock) {
       throw new HttpException('Stock not found', HttpStatus.NOT_FOUND);
     }
 
-    return this.stockService.transStockToDto(stock);
+    const transformedStock = this.stockService.transStockToDto(stock);
+
+    if (!isLoadAllUser && userId) {
+      const user = transformedStock.users.find((user) => user.userId === userId);
+      delete transformedStock.users;
+      return { ...transformedStock, user };
+    }
+
+    return transformedStock;
   }
 
   @Delete()

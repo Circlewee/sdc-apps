@@ -46,7 +46,8 @@ const StockDrawer = ({
     data: stock,
     companiesPrice,
     timeIdx,
-  } = Query.Stock.useQueryStock(stockId, { refetchInterval: Number.POSITIVE_INFINITY });
+    companies,
+  } = Query.Stock.useQueryStock({ stockId }, { refetchInterval: Number.POSITIVE_INFINITY });
   const { data: userCount } = Query.Stock.useUserCount({ stockId });
 
   const stockCountCurrent = getStockStorage(selectedCompany)?.stockCountCurrent;
@@ -113,16 +114,16 @@ const StockDrawer = ({
 
           return {
             count: newCount,
-            price: acc.price + count * (stock?.companies[selectedCompany][currentIdx]?.가격 ?? 0),
+            price: acc.price + count * (companies[selectedCompany][currentIdx]?.가격 ?? 0),
           };
         },
         { count: 0, price: 0 },
       ).price ?? 0) / (currentStockStorage?.stockCountCurrent ?? 1),
     [
+      companies,
       currentStockStorage?.stockCountCurrent,
       currentStockStorage?.stockCountHistory,
       selectedCompany,
-      stock?.companies,
       timeIdx,
     ],
   );

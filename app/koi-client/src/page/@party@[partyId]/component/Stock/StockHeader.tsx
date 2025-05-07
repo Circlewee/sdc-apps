@@ -8,13 +8,23 @@ interface Props {
 }
 
 const StockHeader = ({ stockId }: Props) => {
-  const { data: stock } = Query.Stock.useQueryStock(stockId);
+  const { data: stock } = Query.Stock.useQueryStock({ stockId });
 
   if (stock?.stockPhase !== 'PLAYING') {
     return <></>;
   }
 
-  return <RecommendedPartnersModal stockId={stockId} trigger={<Button shape="circle" icon={<BulbOutlined />} />} />;
+  return (
+    <RecommendedPartnersModal
+      stockId={stockId}
+      trigger={
+        <Button
+          shape="circle"
+          icon={<BulbOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />}
+        />
+      }
+    />
+  );
 };
 
 export default StockHeader;
